@@ -43,7 +43,7 @@ pnpm dev
 - **How to get:** download from your [Mascot Bot dashboard](https://app.mascot.bot) after subscribing
 
 ```bash
-cp /path/to/mascotbot-sdk-react-0.1.7.tgz ./
+cp /path/to/mascotbot-sdk-react-X.X.X.tgz ./
 pnpm install
 ```
 
