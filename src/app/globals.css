@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Override all backgrounds to be transparent */
+html {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+body {
+  background: transparent !important;
+  background-color: transparent !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Override Tailwind's default backgrounds */
+body::before,
+body::after {
+  display: none !important;
+}
+
+/* Ensure Next.js root div is transparent */
+#__next {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Override any theme/dark mode backgrounds */
+.dark,
+.light,
+[data-theme] {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Make sure no element has a background */
+div,
+main,
+section,
+article {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Rive canvas styling */
+canvas {
+  cursor: default !important;
+  user-select: none !important;
+}
+
+/*
+ * Fix height inheritance for SDK containers inside fixed positioning.
+ * The SDK uses h-full (height: 100%) but this doesn't cascade properly
+ * through fixed positioning context. These rules ensure the height
+ * chain remains unbroken from the fixed container to the canvas.
+ * Excludes overlay elements marked with data-overlay attribute.
+ */
+.fixed > div:not([data-overlay]),
+.fixed > div:not([data-overlay]) > div,
+.fixed > div:not([data-overlay]) > div > div,
+.fixed > div:not([data-overlay]) > div > div > div {
+  height: 100% !important;
+  min-height: 100% !important;
+}
+
+.fixed canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
