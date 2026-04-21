@@ -130,4 +130,4 @@ The widget uses a click-through iframe pattern:
 
 - [Mascot Bot Documentation](https://docs.mascot.bot)
 - [ElevenLabs Integration Guide](https://docs.mascot.bot/libraries/elevenlabs-avatar)
-- [Support](mailto:support@mascot.bot) | [Discord](https://discord.gg/SBxfyPXD)
+- [Support](mailto:support@mascot.bot)
