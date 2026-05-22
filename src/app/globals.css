@@ -58,15 +58,15 @@ canvas {
  * chain remains unbroken from the fixed container to the canvas.
  * Excludes overlay elements marked with data-overlay attribute.
  */
-.fixed > div:not([data-overlay]),
-.fixed > div:not([data-overlay]) > div,
-.fixed > div:not([data-overlay]) > div > div,
-.fixed > div:not([data-overlay]) > div > div > div {
+[data-widget-wrapper] > div:not([data-overlay]),
+[data-widget-wrapper] > div:not([data-overlay]) > div,
+[data-widget-wrapper] > div:not([data-overlay]) > div > div,
+[data-widget-wrapper] > div:not([data-overlay]) > div > div > div {
   height: 100% !important;
   min-height: 100% !important;
 }
 
-.fixed canvas {
+[data-widget-wrapper] canvas {
   width: 100% !important;
   height: 100% !important;
 }

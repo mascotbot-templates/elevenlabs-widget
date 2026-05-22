@@ -1,47 +1,48 @@
-import { NextRequest, NextResponse } from "next/server";
+/**
+ * Mint a single-use ElevenLabs Conversational-AI signed URL.
+ *
+ * New-architecture note: there is NO MascotBot endpoint in this path.
+ * The legacy template proxied through api.mascot.bot so the server could
+ * inject visemes into the audio stream. The 0.2.x SDK computes visemes
+ * locally in the browser from the audio ElevenLabs already plays, so the
+ * server only needs to hand the browser a plain ElevenLabs signed URL.
+ * The standing xi-api-key never leaves the server.
+ *
+ * Env: ELEVENLABS_API_KEY + ELEVENLABS_AGENT_ID.
+ */
+import { NextResponse } from "next/server";
 
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const { dynamicVariables } = body;
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
-    // Use Mascot Bot proxy endpoint for automatic viseme injection
-    const response = await fetch("https://api.mascot.bot/v1/get-signed-url", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.MASCOT_BOT_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        config: {
-          provider: "elevenlabs",
-          provider_config: {
-            agent_id: process.env.ELEVENLABS_AGENT_ID,
-            api_key: process.env.ELEVENLABS_API_KEY,
-            ...(dynamicVariables && { dynamic_variables: dynamicVariables }),
-          },
-        },
-      }),
-      // Ensure fresh URL for WebSocket avatar connection
-      cache: "no-store",
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("Failed to get signed URL:", errorText);
-      throw new Error("Failed to get signed URL");
-    }
-
-    const data = await response.json();
-    return NextResponse.json({ signedUrl: data.signed_url });
-  } catch (error) {
-    console.error("Error fetching signed URL:", error);
+export async function POST() {
+  const key = process.env.ELEVENLABS_API_KEY;
+  const agentId = process.env.ELEVENLABS_AGENT_ID;
+  if (!key || !agentId) {
     return NextResponse.json(
-      { error: "Failed to generate signed URL" },
-      { status: 500 }
+      { error: "ELEVENLABS_API_KEY and ELEVENLABS_AGENT_ID must be set" },
+      { status: 400 },
     );
   }
-}
 
-// Force dynamic to prevent caching issues
-export const dynamic = "force-dynamic";
+  const url = new URL(
+    "https://api.elevenlabs.io/v1/convai/conversation/get-signed-url",
+  );
+  url.searchParams.set("agent_id", agentId);
+
+  const res = await fetch(url, {
+    headers: { "xi-api-key": key },
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    const detail = await res.text().catch(() => "");
+    console.error("ElevenLabs signed-url failed:", res.status, detail);
+    return NextResponse.json(
+      { error: `ElevenLabs ${res.status}`, detail: detail.slice(0, 500) },
+      { status: 502 },
+    );
+  }
+
+  const json = (await res.json()) as { signed_url?: string };
+  return NextResponse.json({ signedUrl: json.signed_url });
+}

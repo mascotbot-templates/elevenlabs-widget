@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Providers } from "./providers";
 
 export const metadata: Metadata = {
-  title: "ElevenLabs Widget Demo - Mascot Bot SDK",
-  description: "Open-source example demonstrating ElevenLabs voice AI widget integration with Mascot Bot SDK for embeddable animated avatars with transparent backgrounds",
+  title: "ElevenLabs Widget Demo - MascotBot SDK",
+  description:
+    "Open-source example: embeddable ElevenLabs Conversational AI voice widget with the MascotBot lipsync SDK for transparent-background animated avatars",
 };
 
 export default function RootLayout({
@@ -12,9 +14,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" style={{ background: "transparent", backgroundColor: "transparent" }}>
-      <body className="antialiased" style={{ background: "transparent", backgroundColor: "transparent" }}>
-        {children}
+    <html
+      lang="en"
+      style={{ background: "transparent", backgroundColor: "transparent" }}
+    >
+      <body
+        className="antialiased"
+        style={{ background: "transparent", backgroundColor: "transparent" }}
+      >
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
